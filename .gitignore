@@ -6,3 +6,6 @@ node_modules
 cdk.out
 *.d.ts
 service/node_modules
+service/bin/*.js
+service/lib/*.js
+service/test/*.js
