@@ -1,0 +1,19 @@
+{
+    "name": "bogdan/hackathon-ai-translate",
+    "autoload": {
+        "psr-4": {
+            "HackathonAiTranslate\\": "core/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Bogdan Preda",
+            "email": "bogdan.preda@themeisle.com"
+        },
+        {
+            "name": "Mihai Grigore",
+            "email": "mihai@optimole.com"
+        }
+    ],
+    "require": {}
+}
