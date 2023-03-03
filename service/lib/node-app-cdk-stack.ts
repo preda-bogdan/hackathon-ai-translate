@@ -6,7 +6,7 @@ export class LambdaUrlStack extends cdk.Stack {
     super(scope, id, props);
 
     const myLambda = new cdk.aws_lambda.Function(this, "myLambda", {
-      code: cdk.aws_lambda.Code.fromAsset("src"),
+      code: new cdk.aws_lambda.AssetCode("src"),
       handler: "index.handler",
       runtime: cdk.aws_lambda.Runtime.NODEJS_16_X,
 
