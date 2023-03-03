@@ -8,3 +8,4 @@
 + API rate limit
 + Caching per translation
 + When to query the API?
++ Ensure translation only on frontend.

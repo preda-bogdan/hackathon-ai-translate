@@ -15,12 +15,15 @@
  */
 use HackathonAiTranslate\Parser;
 use HackathonAiTranslate\Api;
+use HackathonAiTranslate\Translator;
 
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
 error_log( var_export( 'Loaded', true ) );
+
+define( 'AI_TRANSLATE_CACHE', plugin_dir_path( __FILE__ ) . 'cache/' );
 
 $vendor_file = trailingslashit( plugin_dir_path( __FILE__ ) ) . 'vendor/autoload.php';
 if ( is_readable( $vendor_file ) ) {
@@ -30,20 +33,29 @@ if ( is_readable( $vendor_file ) ) {
 $env_file = trailingslashit( plugin_dir_path( __FILE__ ) ) . '.env';
 $env = parse_ini_file( $env_file );
 
-$api = new Api( $env );
-error_log( var_export( $api->get_text_from_response(), true ) );
+//$api = new Api( $env );
+//error_log( var_export( $api->get_text_from_response(), true ) );
 //error_log( var_export( $api->request( 'Translate this from English to French: Hello World' ), true ) );
 //die();
 
+$translator = new Translator();
 
-add_filter( 'the_content', function ( $content ) {
-	global $post;
-	if ( $post->ID === 1 ) {
-		// do logic here
-		error_log( var_export( $content, true ) );
-		$parser = new Parser( $content );
-		$parser->process_tags();
-		$content = $parser->replace_in_content( $content );
-	}
-	return $content;
-}  );
+
+//add_filter( 'the_content', function ( $content ) {
+//	global $post;
+//	if ( $post->ID === 1 ) {
+//		// do logic here
+//		error_log( var_export( $content, true ) );
+//		$parser = new Parser( $content );
+//		$parser->process_tags();
+//		$content = $parser->replace_in_content( $content );
+//	}
+//	return $content;
+//}  );
+
+
+//add_filter( 'gettext', function ( $translation, $text, $domain ) {
+//	error_log( var_export( $text, true ) );
+//	error_log( var_export( $domain, true ) );
+//	return $translation;
+//}, 10, 3 );

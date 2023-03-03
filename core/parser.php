@@ -43,12 +43,15 @@ class Parser {
 
 	public function process_tags() {
 		foreach ( $this->tags_list as $tag ) {
-			$paragraph = $this->dom->getElementsByTagName( $tag );
-			$value  = $paragraph->item( 0 )->nodeValue;
-			$id     = md5( $value );
-			$this->tokens_list[$id]['original'] = $value;
-			$this->tokens_list[$id]['translated'] = $value;
-			error_log( var_export( $value, true ) );
+			$elements = $this->dom->getElementsByTagName( $tag );
+			for ( $i = 0; $i < $elements->length; $i++ ) {
+				$element = $elements->item( $i );
+				$value  = $element->nodeValue;
+				$id     = md5( $value );
+				$this->tokens_list[$id]['original'] = $value;
+				$this->tokens_list[$id]['translated'] = $value;
+				error_log( var_export( $this->dom->saveXML($element), true ) );
+			}
 		}
 		$this->get_translated_tokens();
 	}

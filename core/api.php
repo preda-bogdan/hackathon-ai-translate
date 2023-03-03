@@ -11,14 +11,19 @@ namespace HackathonAiTranslate;
 
 class Api {
 	private $secret_key;
+
+	private $api_endpoint = null;
 	public function __construct( $env = [] ) {
 		if ( ! empty( $env ) && isset( $env['OPENAPI_SECRET'] ) && ! empty( $env['OPENAPI_SECRET'] ) ) {
 			$this->secret_key = $env['OPENAPI_SECRET'];
 		}
+		if ( ! empty( $env ) && isset( $env['LAMBDA_URL'] ) && ! empty( $env['LAMBDA_URL'] ) ) {
+			$this->api_endpoint = $env['LAMBDA_URL'];
+		}
 	}
 
 	public function can_use_api() {
-		return ! empty( $this->secret_key );
+		return ! empty( $this->secret_key ) || ! empty( $this->api_endpoint );
 	}
 
 	public function request( $prompt ) {
