@@ -14,6 +14,7 @@
  * @package HackathonAITranslate
  */
 use HackathonAiTranslate\Parser;
+use HackathonAiTranslate\Api;
 
 if ( ! defined( 'WPINC' ) ) {
 	die;
@@ -26,6 +27,14 @@ if ( is_readable( $vendor_file ) ) {
 	require_once $vendor_file;
 }
 
+$env_file = trailingslashit( plugin_dir_path( __FILE__ ) ) . '.env';
+$env = parse_ini_file( $env_file );
+
+$api = new Api( $env );
+error_log( var_export( $api->get_text_from_response(), true ) );
+//error_log( var_export( $api->request( 'Translate this from English to French: Hello World' ), true ) );
+//die();
+
 
 add_filter( 'the_content', function ( $content ) {
 	global $post;
@@ -34,6 +43,7 @@ add_filter( 'the_content', function ( $content ) {
 		error_log( var_export( $content, true ) );
 		$parser = new Parser( $content );
 		$parser->process_tags();
+		$content = $parser->replace_in_content( $content );
 	}
 	return $content;
 }  );
