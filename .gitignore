@@ -2,3 +2,7 @@
 .idea
 node_modules
 .env
+.cdk.staging
+cdk.out
+*.d.ts
+service/node_modules
