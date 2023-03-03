@@ -9,6 +9,9 @@ export class LambdaUrlStack extends cdk.Stack {
       code: new cdk.aws_lambda.AssetCode("src"),
       handler: "index.handler",
       runtime: cdk.aws_lambda.Runtime.NODEJS_16_X,
+      environment: {
+        "OPENAI_API_KEY": "sk-",
+      }
 
     });
 

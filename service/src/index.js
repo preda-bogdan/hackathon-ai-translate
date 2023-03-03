@@ -2,16 +2,23 @@
 //but works for now
 const { Configuration, OpenAIApi } = require("openai");
 
+
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 exports.handler = async function(event) {
-    console.log("request:", JSON.stringify(event, undefined, 2));
+    console.log(event);
+
     let tokens = [];
     if ( event.body !== undefined && event.body !== null
-    && event.body.tokens !==    undefined && event.body.tokens !== null ) {
-        tokens = event.body.tokens;
+     ) {
+
+        let body = JSON.parse(event.body);
+        console.log(body);
+        if ( body.tokens !==    undefined && body.tokens !== null ) {
+            tokens = body.tokens;
+        }
     }
     //TODO check this and finish it
     console.log(tokens);
@@ -43,6 +50,6 @@ exports.handler = async function(event) {
     return {
         statusCode: 200,
         headers: { "Content-Type": "text/json" },
-        body: JSON.stringify({ message: "Hello from my Lambda node!" })
+        body: response.data.choices
     };
 };
