@@ -32,7 +32,7 @@ class Translator {
 		add_action( 'init', array( $this, 'init' ) );
 		add_filter( 'locale', array( $this, 'change_locale' ) );
 		add_filter( 'gettext', array( $this, 'translate' ), 10, 3 );
-		add_action( 'wp_footer', array( $this, 'save_cache' ) );
+		//add_action( 'wp_footer', array( $this, 'save_cache' ) );
 	}
 
 	public function translate_pending( $args ) {

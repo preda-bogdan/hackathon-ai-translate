@@ -34,10 +34,6 @@ class Parser {
 		],
 		[
 			'tag'  => 'div',
-			'class' => 'comments-area',
-		],
-		[
-			'tag'  => 'div',
 			'class' => 'widget',
 		],
 	];
@@ -45,7 +41,7 @@ class Parser {
 	private $buffer = '';
 
 	public function __construct( $content ) {
-		$this->dom = new \DomDocument();
+		$this->dom = new \DomDocument( '1.0', 'UTF-8' );
 		try {
 			$this->buffer = $content;
 			$this->dom->loadHTML( $content, LIBXML_NOERROR | LIBXML_NOWARNING );
@@ -70,11 +66,13 @@ class Parser {
 	}
 
 	private function get_inner_html( $node ) {
-		$innerHTML = '';
-		$children  = $node->childNodes;
-		foreach ( $children as $child ) {
-			$innerHTML .= $child->ownerDocument->saveXML( $child );
-		}
+		//$innerHTML = '';
+		$innerHTML = $node->ownerDocument->saveXML( $node );
+		error_log( var_export( $innerHTML, true ) );
+//		$children  = $node->childNodes;
+//		foreach ( $children as $child ) {
+//			$innerHTML .= $child->ownerDocument->saveXML( $child );
+//		}
 		return $innerHTML;
 	}
 
@@ -98,6 +96,13 @@ class Parser {
 		as_schedule_single_action( time(), 'translate_pending', array( 'value_to_pass' => [ $transient_name, $locale ],  ) );
 	}
 
+		private function create_html_element_from_string( $string ) {
+			$dom = new \DOMDocument( '1.0', 'UTF-8' );
+			$dom->loadHTML( mb_convert_encoding( $string, 'HTML-ENTITIES', 'UTF-8' ) , LIBXML_NOERROR | LIBXML_NOWARNING );
+			$dom->encoding = 'UTF-8';
+			return $dom->documentElement->firstChild;
+		}
+
 	public function process_tags() {
 		$locale = get_locale();
 		$translator = new Translator();
@@ -109,28 +114,19 @@ class Parser {
 				$value  = $this->get_inner_html( $element );
 				$id     = md5( $value );
 				if ( isset( $translations_cache[ $id ] ) ) {
-					error_log( var_export( $value, true ) );
-					error_log( var_export( base64_decode( $translations_cache[ $id ] ), true ) );
-					error_log( var_export( '+++++++++++', true ) );
-					$this->buffer = str_replace( $value, base64_decode( $translations_cache[ $id ] ), $this->buffer );
+						$parent = $element->parentNode;
+						$node = $this->create_html_element_from_string( base64_decode( $translations_cache[ $id ] ) );
+						$import_node = $parent->ownerDocument->importNode( $node, true );
+						error_log( var_export( $this->get_inner_html( $import_node ), true ) );
+						error_log( var_export( $this->get_inner_html( $element ), true ) );
+						$parent->replaceChild( $import_node, $element );
+						error_log( var_export( $element, true ) );
+						$this->buffer = $this->dom->saveHTML();
 					continue;
 				}
 				$this->tokens_list[$id] = base64_encode( $value );
-				//error_log( var_export( $this->get_inner_html( $element ), true ) );
 			}
 		}
-//		foreach ( $this->tags_list as $tag ) {
-//			//$elements = $this->dom->getElementsByTagName( $tag );
-////			$elements = $this->find_by_class( 'primary-menu-ul nav-ul', 'ul' );
-////			for ( $i = 0; $i < $elements->length; $i++ ) {
-////				$element = $elements->item( $i );
-////				$value  = $this->get_inner_html( $element );
-////				$id     = md5( $value );
-////				$this->tokens_list[$id]['original'] = $value;
-////				$this->tokens_list[$id]['translated'] = $value;
-////				error_log( var_export( $this->get_inner_html( $element ), true ) );
-////			}
-//		}
 		$this->save_for_translation( $locale );
 		return $this->buffer;
 	}
