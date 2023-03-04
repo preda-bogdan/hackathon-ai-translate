@@ -47,9 +47,13 @@ exports.handler = async function(event) {
 
     console.log(response.data.choices);
 
+    response.data.choices.forEach((choice) => {
+        tokens[choice.index].translated = choice.text.trim();
+    });
+
     return {
         statusCode: 200,
         headers: { "Content-Type": "text/json" },
-        body: response.data.choices
+        body: tokens
     };
 };
