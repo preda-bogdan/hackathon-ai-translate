@@ -41,7 +41,7 @@ class Translator {
 		if ( ! empty( $content_to_translate ) ) {
 			$api = new Api( true );
 			$translated_content = $api->translate( $content_to_translate );
-			if ( false === $translated_content ) {
+			if ( false === $translated_content || is_null($translated_content) ) {
 				error_log( var_export( 'Aborted, NO response recieved!', true ) );
 				return;
 			}

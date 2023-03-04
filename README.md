@@ -9,3 +9,9 @@
 + Caching per translation | Use a locale file.
 + When to query the API?
 + Ensure translation only on frontend.
+
+
+### TODO
+- [ ] Split requests if tokens > 500
+- [ ] Check replacement after translations
+- [ ] Add widget inside front-end to switch languages
