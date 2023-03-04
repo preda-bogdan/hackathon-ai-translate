@@ -28,23 +28,23 @@ class Translator {
 	public function __construct() {}
 
 	public function load_hooks() {
-		add_action('translate_pending', array( $this, 'translate_pending' ) );
+		add_action('translate_pending', array( $this, 'translate_pending' ), 10, 1 );
 		add_action( 'init', array( $this, 'init' ) );
 		add_filter( 'locale', array( $this, 'change_locale' ) );
 		add_filter( 'gettext', array( $this, 'translate' ), 10, 3 );
 		add_action( 'wp_footer', array( $this, 'save_cache' ) );
 	}
 
-	public function translate_pending( $transient_name ) {
+	public function translate_pending( $args ) {
+		list( $transient_name, $locale ) = $args;
 		$content_to_translate = get_transient( $transient_name );
-		if ( $content_to_translate ) {
-			$parser = new Parser( $content_to_translate );
-			$parser->process_tags();
-			// here do the cache update ?
+		if ( ! empty( $content_to_translate ) ) {
+			$api = new Api( true );
+			$translated_content = $api->translate( $content_to_translate );
+			//$this->write_to_cache( $locale, $translated_content );
 		}
 	}
 	public function init() {
-		as_schedule_single_action( time(), 'translate_pending', array( 'value_to_pass' => 'transient_name' ) );
 		$locale = get_locale();
 		if ( ! in_array( $locale, array_values( $this->supported_locale ) ) ) {
 			return;
@@ -88,7 +88,7 @@ class Translator {
 		if ( $domain === 'default' ) {
 			return false;
 		}
-		
+
 //		error_log( var_export( $original . ' | ' . $domain, true ) );
 
 		if ( false !== strpos( strtolower($original), 'comment' ) ) {

@@ -9,11 +9,17 @@
  */
 namespace HackathonAiTranslate;
 
+use mysql_xdevapi\BaseResult;
+
 class Api {
 	private $secret_key;
 
 	private $api_endpoint = null;
-	public function __construct( $env = [] ) {
+	public function __construct( $use_local = false, $env = [] ) {
+		if ( true === $use_local ) {
+			$env_file = trailingslashit( AI_TRANSLATE_DIR ) . '.env';
+			$env = parse_ini_file( $env_file );
+		}
 		if ( ! empty( $env ) && isset( $env['OPENAPI_SECRET'] ) && ! empty( $env['OPENAPI_SECRET'] ) ) {
 			$this->secret_key = $env['OPENAPI_SECRET'];
 		}
@@ -26,17 +32,34 @@ class Api {
 		return ! empty( $this->secret_key ) || ! empty( $this->api_endpoint );
 	}
 
-	public function request( $prompt ) {
+	public function translate( $content_to_translate ) {
+		if ( empty( $content_to_translate ) ) {
+			return [];
+		}
+		if ( ! $this->can_use_api() ) {
+			return [];
+		}
+
+		$prompts = $this->prepare_call( $content_to_translate );
+		$response = $this->request( $prompts );
+		error_log( var_export( $response, true ) );
+	}
+
+	private function prepare_call( $content_to_translate ) {
+		$prompts = [];
+		foreach ( $content_to_translate as $item ) {
+			$prompts[] = [
+				'original' => json_encode( base64_decode( $item ) ),
+				'translated' => '',
+			];
+		}
+		return $prompts;
+	}
+
+	public function request( $prompts ) {
 		
 		$request_body = [
-			'prompt'            => $prompt,
-			'max_tokens'        => 100,
-			'temperature'       => 0.7,
-			'top_p'             => 1.0,
-			'frequency_penalty' => 0,
-			'presence_penalty'  => 0,
-			'best_of'           => 1,
-			'stream'            => false,
+			'tokens'            => $prompts,
 		];
 		
 		$post_fields = json_encode( $request_body );
@@ -44,7 +67,7 @@ class Api {
 		curl_setopt_array(
 			$curl,
 			array(
-				CURLOPT_URL            => 'https://api.openai.com/v1/engines/text-davinci-003/completions',
+				CURLOPT_URL            => $this->api_endpoint,
 				CURLOPT_RETURNTRANSFER => true,
 				CURLOPT_ENCODING       => '',
 				CURLOPT_MAXREDIRS      => 10,
@@ -54,7 +77,6 @@ class Api {
 				CURLOPT_CUSTOMREQUEST  => 'POST',
 				CURLOPT_POSTFIELDS     => $post_fields,
 				CURLOPT_HTTPHEADER     => array(
-					'Authorization: Bearer ' . $this->secret_key,
 					'Content-Type: application/json',
 				),
 			)

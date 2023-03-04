@@ -11,6 +11,8 @@ namespace HackathonAiTranslate;
 
 class Parser {
 
+	const TRANSIENT_NAMESPACE = 'hackathon_ai_translate_';
+
 	private $dom;
 
 	private $tokens_list = [];
@@ -82,9 +84,15 @@ class Parser {
 		return $elements;
 	}
 
-	private function save_for_translation() {
+	private function save_for_translation( $locale = 'en_US' ) {
+		if ( empty( $this->tokens_list ) ) {
+			return;
+		}
 
-
+		// save transient with tokens_list
+		$transient_name = self::TRANSIENT_NAMESPACE . $locale . '_' . time();
+		set_transient( $transient_name, $this->tokens_list, 60 * 60 * 24 );
+		as_schedule_single_action( time(), 'translate_pending', array( 'value_to_pass' => [ $transient_name, $locale ],  ) );
 	}
 
 	public function process_tags() {
@@ -100,24 +108,23 @@ class Parser {
 				if ( isset( $translations_cache[ $id ] ) ) {
 					continue;
 				}
-				$this->tokens_list[$id]['original'] = $value;
-				$this->tokens_list[$id]['translated'] = $value;
+				$this->tokens_list[$id] = base64_encode( $value );
 				//error_log( var_export( $this->get_inner_html( $element ), true ) );
 			}
 		}
-		foreach ( $this->tags_list as $tag ) {
-			//$elements = $this->dom->getElementsByTagName( $tag );
-//			$elements = $this->find_by_class( 'primary-menu-ul nav-ul', 'ul' );
-//			for ( $i = 0; $i < $elements->length; $i++ ) {
-//				$element = $elements->item( $i );
-//				$value  = $this->get_inner_html( $element );
-//				$id     = md5( $value );
-//				$this->tokens_list[$id]['original'] = $value;
-//				$this->tokens_list[$id]['translated'] = $value;
-//				error_log( var_export( $this->get_inner_html( $element ), true ) );
-//			}
-		}
-		$this->save_for_translation();
-		$this->get_translated_tokens();
+//		foreach ( $this->tags_list as $tag ) {
+//			//$elements = $this->dom->getElementsByTagName( $tag );
+////			$elements = $this->find_by_class( 'primary-menu-ul nav-ul', 'ul' );
+////			for ( $i = 0; $i < $elements->length; $i++ ) {
+////				$element = $elements->item( $i );
+////				$value  = $this->get_inner_html( $element );
+////				$id     = md5( $value );
+////				$this->tokens_list[$id]['original'] = $value;
+////				$this->tokens_list[$id]['translated'] = $value;
+////				error_log( var_export( $this->get_inner_html( $element ), true ) );
+////			}
+//		}
+		$this->save_for_translation( $locale );
+		//$this->get_translated_tokens();
 	}
 }

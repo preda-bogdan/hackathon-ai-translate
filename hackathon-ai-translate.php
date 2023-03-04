@@ -24,6 +24,7 @@ if ( ! defined( 'WPINC' ) ) {
 error_log( var_export( 'Loaded', true ) );
 
 define( 'AI_TRANSLATE_CACHE', plugin_dir_path( __FILE__ ) . 'cache/' );
+define( 'AI_TRANSLATE_DIR', plugin_dir_path( __FILE__ ) );
 
 $vendor_file = trailingslashit( plugin_dir_path( __FILE__ ) ) . 'vendor/autoload.php';
 if ( is_readable( $vendor_file ) ) {
