@@ -43,7 +43,7 @@ exports.handler = async function(event) {
         model: "text-davinci-003",
         prompt: promptArray,
         temperature: 0.3,
-        max_tokens: 100,
+        max_tokens: 500,
         top_p: 1.0,
         frequency_penalty: 0.0,
         presence_penalty: 0.0,

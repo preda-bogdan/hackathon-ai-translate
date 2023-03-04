@@ -109,6 +109,9 @@ class Parser {
 				$value  = $this->get_inner_html( $element );
 				$id     = md5( $value );
 				if ( isset( $translations_cache[ $id ] ) ) {
+					error_log( var_export( $value, true ) );
+					error_log( var_export( base64_decode( $translations_cache[ $id ] ), true ) );
+					error_log( var_export( '+++++++++++', true ) );
 					$this->buffer = str_replace( $value, base64_decode( $translations_cache[ $id ] ), $this->buffer );
 					continue;
 				}
