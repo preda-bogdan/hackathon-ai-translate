@@ -52,7 +52,7 @@ class Translator {
 			}
 			foreach ( $translated_content as $item ) {
 				error_log( var_export( $item, true ) );
-				$cache_response[ $item['id'] ] = base64_encode( json_decode( $item['translated'] ) );
+				$cache_response[ $item['id'] ] = $item['translated'];
 			}
 			$this->write_to_cache( $locale, $cache_response );
 		}

@@ -53,7 +53,7 @@ class Api {
 		foreach ( $content_to_translate as $hash => $item ) {
 			$prompts[] = [
 				'id' => $hash,
-				'original' => json_encode( base64_decode( $item ) ),
+				'original' => $item,
 				'translated' => '',
 			];
 		}

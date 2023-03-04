@@ -46,7 +46,7 @@ function callback($buffer) {
 	// modify buffer here, and then return the updated code
 	// error_log( var_export( $buffer, true ) );
 	$parser = new Parser( $buffer );
-	$parser->process_tags();
+	$buffer = $parser->process_tags();
 	return $buffer;
 }
 

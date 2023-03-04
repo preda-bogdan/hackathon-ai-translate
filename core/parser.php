@@ -42,9 +42,12 @@ class Parser {
 		],
 	];
 
+	private $buffer = '';
+
 	public function __construct( $content ) {
 		$this->dom = new \DomDocument();
 		try {
+			$this->buffer = $content;
 			$this->dom->loadHTML( $content, LIBXML_NOERROR | LIBXML_NOWARNING );
 		} catch ( \Exception $e ) {
 			error_log( var_export( $e->getMessage(), true ) );
@@ -106,6 +109,7 @@ class Parser {
 				$value  = $this->get_inner_html( $element );
 				$id     = md5( $value );
 				if ( isset( $translations_cache[ $id ] ) ) {
+					$this->buffer = str_replace( $value, base64_decode( $translations_cache[ $id ] ), $this->buffer );
 					continue;
 				}
 				$this->tokens_list[$id] = base64_encode( $value );
@@ -125,6 +129,6 @@ class Parser {
 ////			}
 //		}
 		$this->save_for_translation( $locale );
-		//$this->get_translated_tokens();
+		return $this->buffer;
 	}
 }
