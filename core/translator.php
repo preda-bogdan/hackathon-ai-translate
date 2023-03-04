@@ -26,13 +26,24 @@ class Translator {
 	private $translated_strings = [];
 
 	public function __construct() {
+		require_once( plugin_dir_path( __FILE__ ) . '/libraries/action-scheduler/action-scheduler.php' );
+		add_action('translate_pending', array( $this, 'translate_pending' ) );
 		add_action( 'init', array( $this, 'init' ) );
 		add_filter( 'locale', array( $this, 'change_locale' ) );
 		add_filter( 'gettext', array( $this, 'translate' ), 10, 3 );
 		add_action( 'wp_footer', array( $this, 'save_cache' ) );
 	}
 
+	public function translate_pending( $transient_name ) {
+		$content_to_translate = get_transient( $transient_name );
+		if ( $content_to_translate ) {
+			$parser = new Parser( $content_to_translate );
+			$parser->process_tags();
+			// here do the cache update ?
+		}
+	}
 	public function init() {
+		as_schedule_single_action( time(), 'translate_pending', array( 'value_to_pass' => 'transient_name' ) );
 		$locale = get_locale();
 		if ( ! in_array( $locale, array_values( $this->supported_locale ) ) ) {
 			return;
