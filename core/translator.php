@@ -25,7 +25,9 @@ class Translator {
 
 	private $translated_strings = [];
 
-	public function __construct() {
+	public function __construct() {}
+
+	public function load_hooks() {
 		add_action('translate_pending', array( $this, 'translate_pending' ) );
 		add_action( 'init', array( $this, 'init' ) );
 		add_filter( 'locale', array( $this, 'change_locale' ) );
@@ -83,8 +85,14 @@ class Translator {
 	}
 
 	private function is_translatable( $original, $domain ) {
-		if ( $domain !== 'default' ) {
+		if ( $domain === 'default' ) {
 			return false;
+		}
+		
+//		error_log( var_export( $original . ' | ' . $domain, true ) );
+
+		if ( false !== strpos( strtolower($original), 'comment' ) ) {
+			error_log( var_export( $original, true ) );
 		}
 
 		if ( ! in_array( $original, $this->allowed_translations, true ) ) {

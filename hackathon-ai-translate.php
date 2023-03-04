@@ -39,19 +39,34 @@ $env = parse_ini_file( $env_file );
 //die();
 
 $translator = new Translator();
+$translator->load_hooks();
 
+function callback($buffer) {
+	// modify buffer here, and then return the updated code
+	// error_log( var_export( $buffer, true ) );
+	$parser = new Parser( $buffer );
+	$parser->process_tags();
+	return $buffer;
+}
 
-add_filter( 'the_content', function ( $content ) {
-	global $post;
-	if ( $post->ID === 1 ) {
-		// do logic here
-		error_log( var_export( $content, true ) );
-		$parser = new Parser( $content );
-		$parser->process_tags();
-		$content = $parser->replace_in_content( $content );
-	}
-	return $content;
-}  );
+function buffer_start() { ob_start("callback"); }
+
+function buffer_end() { ob_end_flush(); }
+
+add_action('wp_head', 'buffer_start');
+add_action('wp_footer', 'buffer_end');
+
+//add_filter( 'the_content', function ( $content ) {
+//	global $post;
+//	if ( $post->ID === 1 ) {
+//		// do logic here
+//		error_log( var_export( $content, true ) );
+//		$parser = new Parser( $content );
+//		$parser->process_tags();
+//		$content = $parser->replace_in_content( $content );
+//	}
+//	return $content;
+//}  );
 
 
 //add_filter( 'gettext', function ( $translation, $text, $domain ) {
