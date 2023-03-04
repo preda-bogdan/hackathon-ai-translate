@@ -42,13 +42,17 @@ class Api {
 
 		$prompts = $this->prepare_call( $content_to_translate );
 		$response = $this->request( $prompts );
-		error_log( var_export( $response, true ) );
+		if ( empty( $response ) ) {
+			return [];
+		}
+		return json_decode( $response, true );
 	}
 
 	private function prepare_call( $content_to_translate ) {
 		$prompts = [];
-		foreach ( $content_to_translate as $item ) {
+		foreach ( $content_to_translate as $hash => $item ) {
 			$prompts[] = [
+				'id' => $hash,
 				'original' => json_encode( base64_decode( $item ) ),
 				'translated' => '',
 			];

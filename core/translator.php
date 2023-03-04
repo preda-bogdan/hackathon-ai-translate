@@ -41,7 +41,20 @@ class Translator {
 		if ( ! empty( $content_to_translate ) ) {
 			$api = new Api( true );
 			$translated_content = $api->translate( $content_to_translate );
-			//$this->write_to_cache( $locale, $translated_content );
+			if ( false === $translated_content ) {
+				error_log( var_export( 'Aborted, NO response recieved!', true ) );
+				return;
+			}
+			
+			$cache_response = $this->get_cahed_file( $locale );
+			if ( ! is_array( $cache_response ) ) {
+				$cache_response = json_decode( $cache_response, true );
+			}
+			foreach ( $translated_content as $item ) {
+				error_log( var_export( $item, true ) );
+				$cache_response[ $item['id'] ] = base64_encode( json_decode( $item['translated'] ) );
+			}
+			$this->write_to_cache( $locale, $cache_response );
 		}
 	}
 	public function init() {
