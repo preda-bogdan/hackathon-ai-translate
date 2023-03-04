@@ -26,7 +26,6 @@ class Translator {
 	private $translated_strings = [];
 
 	public function __construct() {
-		require_once( plugin_dir_path( __FILE__ ) . '/libraries/action-scheduler/action-scheduler.php' );
 		add_action('translate_pending', array( $this, 'translate_pending' ) );
 		add_action( 'init', array( $this, 'init' ) );
 		add_filter( 'locale', array( $this, 'change_locale' ) );

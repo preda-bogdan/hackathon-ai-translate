@@ -29,7 +29,7 @@ $vendor_file = trailingslashit( plugin_dir_path( __FILE__ ) ) . 'vendor/autoload
 if ( is_readable( $vendor_file ) ) {
 	require_once $vendor_file;
 }
-
+require_once( plugin_dir_path( __FILE__ ) . 'libraries/action-scheduler/action-scheduler.php' );
 $env_file = trailingslashit( plugin_dir_path( __FILE__ ) ) . '.env';
 $env = parse_ini_file( $env_file );
 
