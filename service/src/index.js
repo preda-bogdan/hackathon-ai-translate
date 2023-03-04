@@ -6,6 +6,11 @@ const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
 });
+const sleep = function (ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+};
 const openai = new OpenAIApi(configuration);
 exports.handler = async function(event) {
     console.log(event);
@@ -39,21 +44,27 @@ exports.handler = async function(event) {
     });
 
     console.log(promptArray);
-    const response = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: promptArray,
-        temperature: 0.3,
-        max_tokens: 200,
-        top_p: 1.0,
-        frequency_penalty: 0.0,
-        presence_penalty: 0.0,
-    });
+    for (let prompt of promptArray) {
+        await sleep(2000);
+        console.log(prompt);
+        const response = await openai.createCompletion({
+            model: "text-davinci-003",
+            prompt: prompt,
+            temperature: 0.3,
+            max_tokens: 500,
+            top_p: 1.0,
+            frequency_penalty: 0.0,
+            presence_penalty: 0.0,
+        });
+        response.data.choices.forEach((choice) => {
+            tokens[choice.index].translated =  new Buffer( choice.text.trim() ).toString( 'base64' );
+        });
+    }
 
-    console.log(response.data.choices);
 
-    response.data.choices.forEach((choice) => {
-        tokens[choice.index].translated =  new Buffer( choice.text.trim() ).toString( 'base64' );
-    });
+    console.log(tokens);
+
+
 
     return {
         statusCode: 200,
