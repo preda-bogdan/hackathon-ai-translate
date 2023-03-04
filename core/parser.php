@@ -41,6 +41,15 @@ class Parser {
 		}
 	}
 
+	private function get_inner_html( $node ) {
+		$innerHTML = '';
+		$children  = $node->childNodes;
+		foreach ( $children as $child ) {
+			$innerHTML .= $child->ownerDocument->saveXML( $child );
+		}
+		return $innerHTML;
+	}
+
 	public function process_tags() {
 		foreach ( $this->tags_list as $tag ) {
 			$elements = $this->dom->getElementsByTagName( $tag );
@@ -50,7 +59,7 @@ class Parser {
 				$id     = md5( $value );
 				$this->tokens_list[$id]['original'] = $value;
 				$this->tokens_list[$id]['translated'] = $value;
-				error_log( var_export( $this->dom->saveXML($element), true ) );
+				error_log( var_export( $this->get_inner_html( $element ), true ) );
 			}
 		}
 		$this->get_translated_tokens();

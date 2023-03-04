@@ -41,17 +41,17 @@ $env = parse_ini_file( $env_file );
 $translator = new Translator();
 
 
-//add_filter( 'the_content', function ( $content ) {
-//	global $post;
-//	if ( $post->ID === 1 ) {
-//		// do logic here
-//		error_log( var_export( $content, true ) );
-//		$parser = new Parser( $content );
-//		$parser->process_tags();
-//		$content = $parser->replace_in_content( $content );
-//	}
-//	return $content;
-//}  );
+add_filter( 'the_content', function ( $content ) {
+	global $post;
+	if ( $post->ID === 1 ) {
+		// do logic here
+		error_log( var_export( $content, true ) );
+		$parser = new Parser( $content );
+		$parser->process_tags();
+		$content = $parser->replace_in_content( $content );
+	}
+	return $content;
+}  );
 
 
 //add_filter( 'gettext', function ( $translation, $text, $domain ) {
