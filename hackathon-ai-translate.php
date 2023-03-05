@@ -57,6 +57,32 @@ function buffer_end() { ob_end_flush(); }
 add_action('wp_head', 'buffer_start');
 add_action('wp_footer', 'buffer_end');
 
+function ai_translate_add_button() {
+	$translator = new Translator();
+	$languages = $translator->get_supported_locale();
+	global $wp;
+
+	if ( count( $languages ) >= 1 ) {
+		echo '<div class="language-switcher">';
+		echo '<ul>';
+		foreach ( $languages as $lang => $locale ) {
+			$wp->query_vars['lang'] = $lang;
+			$current_url =  add_query_arg( $wp->query_vars, home_url( $wp->request ) );
+			echo '<li><a href="' . $current_url . '" title="' . $locale . '">' . ucfirst( $lang ) . '</a></li>';
+		}
+		echo '</ul>';
+		echo '</div>';
+	}
+}
+add_action( 'wp_footer', 'ai_translate_add_button' );
+
+
+function ai_translate_add_styles() {
+	wp_enqueue_style( 'ai-translate-style', plugin_dir_url( __FILE__ ) . 'style.css' );
+}
+add_action( 'wp_enqueue_scripts', 'ai_translate_add_styles' );
+
+
 //add_filter( 'the_content', function ( $content ) {
 //	global $post;
 //	if ( $post->ID === 1 ) {
