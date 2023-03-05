@@ -10,9 +10,8 @@ Whether you’re looking to expand your reach to a global audience, or simply ne
 + Translate posts and pages
 + Caching per translation
 + Translation from English to other languages (FR/RO/ES/SER)
++ Widget to switch languages
 
-
-### TODO
-- [ ] Split requests if tokens > 500
-- [ ] Check replacement after translations
-- [ ] Add widget inside front-end to switch languages
+### Authors
++ [Mihai Grigore](@GrigoreMihai)
++ [Bogdan Preda](@preda-bogdan)
