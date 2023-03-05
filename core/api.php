@@ -32,7 +32,7 @@ class Api {
 		return ! empty( $this->secret_key ) || ! empty( $this->api_endpoint );
 	}
 
-	public function translate( $content_to_translate ) {
+	public function translate( $content_to_translate, $locale ) {
 		if ( empty( $content_to_translate ) ) {
 			return [];
 		}
@@ -41,7 +41,7 @@ class Api {
 		}
 
 		$prompts = $this->prepare_call( $content_to_translate );
-		$response = $this->request( $prompts );
+		$response = $this->request( $prompts, $locale );
 		if ( empty( $response ) ) {
 			return [];
 		}
@@ -60,10 +60,24 @@ class Api {
 		return $prompts;
 	}
 
-	public function request( $prompts ) {
-		
+	public function request( $prompts, $locale ) {
+
+		$language = 'french';
+		switch($locale) {
+			case 'ro_RO':
+				$language = 'romanian';
+				break;
+			case 'es_ES':
+				$language = 'spanish';
+				break;
+			case 'fr_FR':
+				$language = 'french';
+				break;
+		}
+
 		$request_body = [
 			'tokens'            => $prompts,
+			'language'          => $language,
 		];
 		
 		$post_fields = json_encode( $request_body );
