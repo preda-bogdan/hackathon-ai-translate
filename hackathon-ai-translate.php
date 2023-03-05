@@ -57,6 +57,7 @@ function ai_translate_add_button() {
 	if ( count( $languages ) >= 1 ) {
 		echo '<div class="language-switcher">';
 		echo '<ul>';
+		$wp->query_vars['lang'] = '';
 		$current_url =  add_query_arg( $wp->query_vars, home_url( $wp->request ) );
 		echo '<li><a href="' . $current_url . '" title="en_US"><img src="https://flagicons.lipis.dev/flags/4x3/gb.svg" /></a></li>';
 		foreach ( $languages as $lang => $locale ) {
