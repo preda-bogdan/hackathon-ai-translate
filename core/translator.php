@@ -17,6 +17,7 @@ class Translator {
 		'fr' => 'fr_FR',
 		'ro' => 'ro_RO',
 		'es' => 'es_ES',
+		'ser' => 'ser_SER',
 	];
 
 	private $allowed_translations = [

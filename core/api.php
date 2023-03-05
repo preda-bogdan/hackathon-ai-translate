@@ -73,6 +73,9 @@ class Api {
 			case 'fr_FR':
 				$language = 'french';
 				break;
+			case 'ser_SER':
+				$language = 'serbian';
+				break;
 		}
 
 		$request_body = [
