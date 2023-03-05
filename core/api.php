@@ -9,8 +9,6 @@
  */
 namespace HackathonAiTranslate;
 
-use mysql_xdevapi\BaseResult;
-
 class Api {
 	private $secret_key;
 
@@ -114,20 +112,5 @@ class Api {
 		} else {
 			return $response;
 		}
-	}
-
-
-	//{"id":"cmpl-6q2PUYoCZ4EQayKg5PGpLEf1pCAFn","object":"text_completion","created":1677860340,"model":"text-davinci-003","choices":[{"text":"\\n\\nBonjour tout le monde","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":10,"completion_tokens":10,"total_tokens":20}}
-	public function get_text_from_response( $response = null ) {
-		if ( $response === null ) {
-			$response = '{"id":"cmpl-6q2PUYoCZ4EQayKg5PGpLEf1pCAFn","object":"text_completion","created":1677860340,"model":"text-davinci-003","choices":[{"text":"\\n\\nBienvenue sur WordPress. C\'est votre premier article. Éditez-le ou supprimez-le, puis commencez à écrire !","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":10,"completion_tokens":10,"total_tokens":20}}';
-		}
-		if ( $response ) {
-			$response = json_decode( $response );
-			if ( isset( $response->choices ) && ! empty( $response->choices ) ) {
-				return trim( $response->choices[0]->text );
-			}
-		}
-		return '';
 	}
 }

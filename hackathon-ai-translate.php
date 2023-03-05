@@ -2,9 +2,9 @@
 /**
  * Plugin Name:       AI Translate
  * Description:       This plugin is a hackathon project to test the AI translation capabilities.
- * Version:           2.5.3
+ * Version:           1.0.0
  * Plugin URI:        https://ai-translate.test
- * Author:            DreamTeam
+ * Author:            DreamTeam (Mihai Grigore, Bogdan Preda)
  * License:           MIT
  * License URI:       https://opensource.org/license/mit
  * Text Domain:       hack-ai-translate
@@ -14,7 +14,6 @@
  * @package HackathonAITranslate
  */
 use HackathonAiTranslate\Parser;
-use HackathonAiTranslate\Api;
 use HackathonAiTranslate\Translator;
 
 if ( ! defined( 'WPINC' ) ) {
@@ -34,17 +33,10 @@ require_once( plugin_dir_path( __FILE__ ) . 'libraries/action-scheduler/action-s
 $env_file = trailingslashit( plugin_dir_path( __FILE__ ) ) . '.env';
 $env = parse_ini_file( $env_file );
 
-//$api = new Api( $env );
-//error_log( var_export( $api->get_text_from_response(), true ) );
-//error_log( var_export( $api->request( 'Translate this from English to French: Hello World' ), true ) );
-//die();
-
 $translator = new Translator();
 $translator->load_hooks();
 
 function callback($buffer) {
-	// modify buffer here, and then return the updated code
-	// error_log( var_export( $buffer, true ) );
 	$parser = new Parser( $buffer );
 	$buffer = $parser->process_tags();
 	return $buffer;
@@ -85,21 +77,14 @@ function ai_translate_add_styles() {
 add_action( 'wp_enqueue_scripts', 'ai_translate_add_styles' );
 
 
-//add_filter( 'the_content', function ( $content ) {
-//	global $post;
-//	if ( $post->ID === 1 ) {
-//		// do logic here
-//		error_log( var_export( $content, true ) );
-//		$parser = new Parser( $content );
-//		$parser->process_tags();
-//		$content = $parser->replace_in_content( $content );
-//	}
-//	return $content;
-//}  );
-
-
-//add_filter( 'gettext', function ( $translation, $text, $domain ) {
-//	error_log( var_export( $text, true ) );
-//	error_log( var_export( $domain, true ) );
-//	return $translation;
-//}, 10, 3 );
+function add_query_arg_to_home_url($url, $path, $orig_scheme, $blog_id) {
+	$translator = new Translator();
+	$languages = $translator->get_supported_locale();
+	if ( isset( $_GET['lang'] ) && array_key_exists( $_GET['lang'], $languages ) ) {
+		$arg_name = 'lang';
+		$arg_value = $_GET['lang'];
+		return add_query_arg($arg_name, $arg_value, $url);
+	}
+	return $url;
+}
+add_filter('home_url', 'add_query_arg_to_home_url', 10, 4);
