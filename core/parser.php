@@ -89,6 +89,9 @@ class Parser {
 		if ( empty( $this->tokens_list ) ) {
 			return;
 		}
+		if ( 'en_US' === $locale ) {
+			return;
+		}
 
 		// save transient with tokens_list
 		$transient_name = self::TRANSIENT_NAMESPACE . $locale . '_' . time();
@@ -107,6 +110,9 @@ class Parser {
 		$locale = get_locale();
 		$translator = new Translator();
 		$translations_cache = $translator->get_cahed_file( $locale );
+		if ( ! in_array( $locale, array_values( $translator->get_supported_locale() ) ) ) {
+			return $this->buffer;
+		}
 		foreach ( $this->sections_list as $section ) {
 			$elements = $this->find_by_class( $section['class'], $section['tag'] );
 			for ( $i = 0; $i < $elements->length; $i++ ) {

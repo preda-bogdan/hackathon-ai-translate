@@ -65,6 +65,8 @@ function ai_translate_add_button() {
 	if ( count( $languages ) >= 1 ) {
 		echo '<div class="language-switcher">';
 		echo '<ul>';
+		$current_url =  add_query_arg( $wp->query_vars, home_url( $wp->request ) );
+		echo '<li><a href="' . $current_url . '" title="en_US">En</a></li>';
 		foreach ( $languages as $lang => $locale ) {
 			$wp->query_vars['lang'] = $lang;
 			$current_url =  add_query_arg( $wp->query_vars, home_url( $wp->request ) );
