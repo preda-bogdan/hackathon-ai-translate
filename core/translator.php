@@ -63,6 +63,7 @@ class Translator {
 			}
 			$this->write_to_cache( $locale, $cache_response );
 		}
+		delete_transient( $transient_name );
 	}
 	public function init() {
 		$locale = get_locale();
