@@ -110,8 +110,12 @@ class Parser {
 		}
 
 		// save transient with tokens_list
-		$transient_name = self::TRANSIENT_NAMESPACE . $locale . '_' . time();
+		$transient_name = self::TRANSIENT_NAMESPACE . $locale . '_' . md5( $this->buffer );
+		if ( get_transient ( $transient_name ) ) {
+			return;
+		}
 		set_transient( $transient_name, $this->tokens_list, 60 * 60 * 24 );
+
 		as_schedule_single_action( time(), 'translate_pending', array( 'value_to_pass' => [ $transient_name, $locale ],  ) );
 	}
 

@@ -9,3 +9,4 @@ service/node_modules
 service/bin/*.js
 service/lib/*.js
 service/test/*.js
+cache/
