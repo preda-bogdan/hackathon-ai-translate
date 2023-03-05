@@ -15,6 +15,8 @@ class Translator {
 
 	private $supported_locale = [
 		'fr' => 'fr_FR',
+		'ro' => 'ro_RO',
+		'es' => 'es_ES',
 	];
 
 	private $allowed_translations = [
@@ -26,6 +28,10 @@ class Translator {
 	private $translated_strings = [];
 
 	public function __construct() {}
+
+	public function get_supported_locale() {
+		return $this->supported_locale;
+	}
 
 	public function load_hooks() {
 		add_action('translate_pending', array( $this, 'translate_pending' ), 10, 1 );
