@@ -17,7 +17,7 @@ class Parser {
 
 	private $tokens_list = [];
 
-	private $tags_list = [ 'p' ];
+	private $tags_list = [ 'p' , 'h2' ];
 
 	private $sections_list = [
 		[
@@ -35,6 +35,22 @@ class Parser {
 		[
 			'tag'  => 'div',
 			'class' => 'widget',
+		],
+		[
+			'tag'  => 'h2',
+			'class' => 'comments-title',
+		],
+		[
+			'tag'  => 'div',
+			'class' => 'nv-comment-content',
+		],
+		[
+			'tag'  => 'div',
+			'class' => 'comment-author',
+		],
+		[
+			'tag'  => 'div',
+			'class' => 'comment-respond',
 		],
 	];
 
@@ -124,7 +140,7 @@ class Parser {
 						$this->buffer = $this->dom->saveHTML();
 					continue;
 				}
-				$this->tokens_list[$id] = base64_encode( $value );
+				$this->tokens_list[$id] = $value;
 			}
 		}
 		$this->save_for_translation( $locale );
