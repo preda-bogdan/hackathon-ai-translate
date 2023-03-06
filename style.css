@@ -6,7 +6,7 @@
     background-color: #fff;
     box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 50px;
 }
 .language-switcher ul {
     list-style: none;
@@ -20,8 +20,8 @@
 .language-switcher a {
     color: #333;
     text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 3px;
+    padding: 5px 8px;
+    border-radius: 50%;
     transition: background-color 0.3s ease-in-out;
 }
 .language-switcher a:hover {

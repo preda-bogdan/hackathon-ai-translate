@@ -21,12 +21,36 @@ class Parser {
 
 	private $sections_list = [
 		[
+			'tag'  => 'h1',
+			'class' => '',
+		],
+		[
+			'tag'  => 'h2',
+			'class' => '',
+		],
+		[
+			'tag'  => 'h1',
+			'class' => 'entry-title',
+		],
+		[
+			'tag'  => 'h2',
+			'class' => 'entry-title',
+		],
+		[
+			'tag'  => 'ul',
+			'class' => 'nv-meta-list',
+		],
+		[
 			'tag'  => 'ul',
 			'class' => 'primary-menu-ul nav-ul',
 		],
 		[
 			'tag'  => 'div',
 			'class' => 'entry-header',
+		],
+		[
+			'tag'  => 'div',
+			'class' => 'entry-summary',
 		],
 		[
 			'tag'  => 'div',
@@ -52,6 +76,10 @@ class Parser {
 			'tag'  => 'div',
 			'class' => 'comment-respond',
 		],
+		[
+			'tag'  => 'div',
+			'class' => 'edit-reply',
+		]
 	];
 
 	private $buffer = '';
@@ -66,29 +94,8 @@ class Parser {
 		}
 	}
 
-	public function replace_in_content( $content ) {
-		foreach ( $this->tokens_list as $token ) {
-			$content = str_replace( $token['original'], $token['translated'], $content );
-		}
-		return $content;
-	}
-
-	private function get_translated_tokens() {
-		$api = new Api();
-		foreach ( $this->tokens_list as $id => $token ) {
-			$translated = $api->get_text_from_response();
-			$this->tokens_list[$id]['translated'] = $translated;
-		}
-	}
-
 	private function get_inner_html( $node ) {
-		//$innerHTML = '';
 		$innerHTML = $node->ownerDocument->saveXML( $node );
-		error_log( var_export( $innerHTML, true ) );
-//		$children  = $node->childNodes;
-//		foreach ( $children as $child ) {
-//			$innerHTML .= $child->ownerDocument->saveXML( $child );
-//		}
 		return $innerHTML;
 	}
 
@@ -143,10 +150,7 @@ class Parser {
 						$parent = $element->parentNode;
 						$node = $this->create_html_element_from_string( base64_decode( $translations_cache[ $id ] ) );
 						$import_node = $parent->ownerDocument->importNode( $node, true );
-						error_log( var_export( $this->get_inner_html( $import_node ), true ) );
-						error_log( var_export( $this->get_inner_html( $element ), true ) );
 						$parent->replaceChild( $import_node, $element );
-						error_log( var_export( $element, true ) );
 						$this->buffer = $this->dom->saveHTML();
 					continue;
 				}
